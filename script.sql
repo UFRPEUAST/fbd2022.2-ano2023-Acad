@@ -755,6 +755,9 @@ INSERT INTO turma_aluno (aluno_id, turma_id) VALUES
  (251, 36),
  (252, 36);
 
+select count(*) from turma_aluno
+
+
 select t.turno, d.nome as disciplina,
        p.nome as professor, c.nome as curso,
        (select count(*) from turma_aluno
@@ -767,6 +770,8 @@ from turma t, disciplina d, professor p, curso c
 -- from aluno a, disciplina d, turma_aluno ta, turma t
 -- where a.id=ta.aluno_id and () d.id=ta.turma_id;
 
+select string_agg(nome, ', ') from disciplina;
+
 select aluno.nome, (select count(*) as quant_disciplinas from turma_aluno
 where turma_aluno.aluno_id=aluno.id),
        (select string_agg(nome, ' - ') as disciplinas
@@ -776,6 +781,4 @@ where turma_aluno.aluno_id=aluno.id),
          and turma_aluno.aluno_id=aluno.id)
 from aluno
 order by quant_disciplinas DESC;
-
-select string_agg(nome, ', ') from disciplina;
 
