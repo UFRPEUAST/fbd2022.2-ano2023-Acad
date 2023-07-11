@@ -1,16 +1,42 @@
-# This is a sample Python script.
+from flask import Flask, request, Response, make_response
 
-# Press F6 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from modulos.empresa.dao_empresa import DaoEmpresa
+from modulos.empresa.empresa import Empresa
+
+POST = 'POST'
+
+app = Flask(__name__)
+empresa_dao = DaoEmpresa()
+
+@app.route('/', methods=['GET'])
+def home():
+    print('HOME')
+    print(request)
+    print('\n'.join(dir(request)))
+    print('aaaaaaaaaaaaaaaa')
+    print(request.headers)
+    return {}
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+@app.route('/empresa/', methods=['GET', POST])
+def get():
+    if request.method == POST:
+        data = request.get_json()
+        empresa = Empresa(**data)
+        id = empresa_dao.save(empresa)
+        return make_response({"id": id}, 200)
+
+    nome = request.args.get('nome', None)
+    empresas = empresa_dao.select_all(nome)
+    return empresas
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+@app.route('/empresa/<int:id>/',methods=['GET'])
+def get_empresa(id):
+    empresa = empresa_dao.get_by_id(id)
+    if not empresa:
+        return make_response({"error": "asdasdasd"}, 404)
+    return empresa.get_json()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+app.run()
