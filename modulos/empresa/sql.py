@@ -1,5 +1,3 @@
-
-
 class SQLEmpresa(object):
     TABLE = 'empresa'
     COLUMN_NAME = 'nome'
@@ -7,3 +5,4 @@ class SQLEmpresa(object):
     SELECT_BY_ID = "SELECT * FROM {} WHERE ID={}"
     SELECT_ALL_SEARCH = "SELECT * from {} where {} ilike '%{}%'"
     INSERT = "INSERT INTO {} (nome, cnpj) VALUES ('{}', '{}') returning id"
+    SELECT_BY_CNPJ = "SELECT * FROM {} WHERE CNPJ='{}'"

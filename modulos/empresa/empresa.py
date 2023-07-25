@@ -1,4 +1,9 @@
 class Empresa():
+    NOME = 'nome'
+    CNPJ = 'cnpj'
+    CAMPOS_OBRIGATORIOS = [NOME, CNPJ]
+    MAX_LENGTH_NOME = 18
+
     def __init__(self, nome, cnpj, id=None):
         self.id = id
         self.nome = nome

@@ -2,6 +2,7 @@ from connection.ServerConnection import ConnectDataBase
 from modulos.empresa.empresa import Empresa
 from modulos.empresa.sql import SQLEmpresa
 
+
 class DaoEmpresa(SQLEmpresa):
 
     def __init__(self):
@@ -35,15 +36,26 @@ class DaoEmpresa(SQLEmpresa):
 
     def save(self, empresa):
         sql = self.INSERT.format(self.TABLE, empresa.nome, empresa.cnpj)
-        cursor = self.connect.get_cursor()
-        cursor.execute(sql)
+        self.cursor = self.connect.get_cursor()
+        self.cursor.execute(sql)
         self.connect.commit()
-        data = cursor.fetchone()
-        return data[0]
+        data = self.cursor.fetchone()
+        empresa.id = data[0]
+        self.cursor.close()
+        return empresa
 
+    def closed_and_new_connection(self):
+        self.connect = ConnectDataBase()
+        self.cursor = self.connect.get_cursor()
 
     def _execute_sql(self, sql, insert=False):
         self.cursor.execute(sql)
         if insert:
             return
         self.columns_name = [desc[0] for desc in self.cursor.description]
+
+    def get_by_cnpj(self, cnpj):
+        sql = self.SELECT_BY_CNPJ.format(self.TABLE, str(cnpj))
+        self._execute_sql(sql)
+        empresa = self._create_object(self.cursor.fetchone())
+        return empresa
